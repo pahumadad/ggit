@@ -1,0 +1,33 @@
+import os
+import pycodestyle
+from unittest import TestCase
+
+
+class TestCodeFormat(TestCase):
+    def test_pep8_code(self):
+        style = pycodestyle.StyleGuide()
+        filenames = []
+        parent = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                              os.path.pardir))
+        path = os.path.join(parent, "ggit")
+        for root, _, files in os.walk(path):
+            python_files = [f for f in files if f.endswith('.py')]
+            for pyfile in python_files:
+                filename = "{0}/{1}".format(root, pyfile)
+                filenames.append(filename)
+        check = style.check_files(filenames)
+        msg = "PEP8 style errors: {}".format(check.total_errors)
+        self.assertEqual(check.total_errors, 0, msg)
+
+    def test_pep8_tests(self):
+        style = pycodestyle.StyleGuide()
+        filenames = []
+        path = os.path.abspath(os.path.dirname(__file__))
+        for root, _, files in os.walk(path):
+            python_files = [f for f in files if f.endswith('.py')]
+            for pyfile in python_files:
+                filename = "{0}/{1}".format(root, pyfile)
+                filenames.append(filename)
+        check = style.check_files(filenames)
+        msg = "PEP8 style errors: {}".format(check.total_errors)
+        self.assertEqual(check.total_errors, 0, msg)
