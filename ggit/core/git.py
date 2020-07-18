@@ -14,11 +14,24 @@ class Git:
     def add(self, file):
         self.__exec_git(["add", file])
 
-    def status(self):
+    def status_header(self):
         out = []
         resp = self.__exec_git(["status"])
         for line in resp.splitlines():
             if line == "":
                 break
             out.append(line)
+        return out
+
+    def status_to_commit(self):
+        out = []
+        get_msg = False
+        resp = self.__exec_git(["status"])
+        for line in resp.splitlines():
+            if get_msg and line == "":
+                break
+            if line == "Changes to be committed:":
+                get_msg = True
+            if get_msg:
+                out.append(line)
         return out
