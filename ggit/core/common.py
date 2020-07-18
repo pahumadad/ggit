@@ -1,4 +1,5 @@
 import os
+import sys
 
 from ggit.core.gpg import GPG
 
@@ -18,9 +19,16 @@ def get_dir():
     return os.path.abspath(os.getcwd())
 
 
+def get_file(file):
+    file = os.path.join(get_dir(), file)
+    if not os.path.isfile(file):
+        sys.exit(f"file not found: f{file}")
+    return file
+
+
 def get_files(file_type=FILE_TYPE_ALL):
     if file_type not in (FILE_TYPE_ALL, FILE_TYPE_ENC, FILE_TYPE_NO_ENC):
-        raise ValueError(
+        sys.exit(
             f"file_type arg unknown: {file_type} (choose from "
             f"'{FILE_TYPE_ALL}', '{FILE_TYPE_ENC}' or '{FILE_TYPE_NO_ENC}')"
         )
