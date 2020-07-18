@@ -11,6 +11,9 @@ class Git:
             raise RuntimeError(r.stderr.decode("utf-8").rstrip())
         return r.stdout.decode("utf-8")
 
+    def add(self, file):
+        self.__exec_git(["add", file])
+
     def status(self):
         out = []
         resp = self.__exec_git(["status"])
