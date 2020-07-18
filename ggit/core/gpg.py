@@ -26,31 +26,33 @@ class GPG:
             self.__id = line.split(":")[4]
             break
 
-    def __get_enc_filename(self, file):
+    def __get_enc_file(self, file):
         return file + self.EXT
 
-    def __get_dec_filename(self, file):
+    def __get_dec_file(self, file):
         return file.replace(self.EXT, "")
 
     def exist_enc(self, file):
-        return os.path.isfile(self.__get_enc_filename(file))
+        return os.path.isfile(self.__get_enc_file(file))
 
     def exist_dec(self, file):
-        return os.path.isfile(self.__get_dec_filename(file))
+        return os.path.isfile(self.__get_dec_file(file))
 
     def encrypt(self, file):
         if not os.path.isfile(file):
             raise ValueError(f"file not found: {file}")
 
+        enc_file = self.__get_enc_file(file)
         self.__exec_gpg([
             "--use-agent",
             "--yes",
             "--trust-model=always",
             "-r", self.__id,
             "--encrypt",
-            "-o", self.__get_enc_filename(file),
+            "-o", enc_file,
             file
         ])
+        return enc_file
 
     def decrypt(self, file):
         if not os.path.isfile(file):
@@ -63,6 +65,6 @@ class GPG:
             "--use-agent",
             "-q",
             "--decrypt",
-            "-o", self.__get_dec_filename(file),
+            "-o", self.__get_dec_file(file),
             file
         ])
