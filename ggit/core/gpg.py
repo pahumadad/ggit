@@ -26,17 +26,21 @@ class GPG:
             self.__id = line.split(":")[4]
             break
 
-    def __get_enc_file(self, file):
-        return file + self.EXT
+    @classmethod
+    def __get_enc_file(cls, file):
+        return file + cls.EXT
 
-    def __get_dec_file(self, file):
-        return file.replace(self.EXT, "")
+    @classmethod
+    def __get_dec_file(cls, file):
+        return file.replace(cls.EXT, "")
 
-    def exist_enc(self, file):
-        return os.path.isfile(self.__get_enc_file(file))
+    @classmethod
+    def exist_enc(cls, file):
+        return os.path.isfile(cls.__get_enc_file(file))
 
-    def exist_dec(self, file):
-        return os.path.isfile(self.__get_dec_file(file))
+    @classmethod
+    def exist_dec(cls, file):
+        return os.path.isfile(cls.__get_dec_file(file))
 
     def encrypt(self, file):
         if not os.path.isfile(file):
