@@ -18,6 +18,9 @@ class Git:
     def commit(self, args):
         return self.__exec_git(["commit"] + args)
 
+    def push(self):
+        return self.__exec_git(["push"])
+
     def status_header(self):
         out = []
         resp = self.__exec_git(["status"])
