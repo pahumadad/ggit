@@ -1,3 +1,4 @@
+import sys
 from subprocess import PIPE
 from subprocess import run
 
@@ -8,11 +9,14 @@ class Git:
         cmd = ["git"] + args
         r = run(cmd, stdout=PIPE, stderr=PIPE)
         if r.returncode != 0:
-            raise RuntimeError(r.stderr.decode("utf-8").rstrip())
+            sys.exit(r.stderr.decode("utf-8").rstrip())
         return r.stdout.decode("utf-8")
 
     def add(self, file):
         self.__exec_git(["add", file])
+
+    def commit(self, args):
+        return self.__exec_git(["commit"] + args)
 
     def status_header(self):
         out = []
