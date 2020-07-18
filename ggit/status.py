@@ -1,7 +1,8 @@
 from ggit.core.common import get_dir
 from ggit.core.common import get_files
-from ggit.core.common import BC_RED
 from ggit.core.common import BC_END
+from ggit.core.common import BC_GREEN
+from ggit.core.common import BC_RED
 from ggit.core.common import FILE_TYPE_NO_ENC
 from ggit.core.git import Git
 from ggit.core.gpg import GPG
@@ -11,7 +12,6 @@ def status():
 
     git = Git()
     gpg = GPG()
-    index = len(get_dir()) + 1
 
     new_files = []
     changed_files = []
@@ -22,14 +22,25 @@ def status():
         else:
             changed_files.append(f)
 
-    # print commits status
-    for line in git.status():
+    # print git status header
+    for line in git.status_header():
         print(line)
     print()
+
+    # print git status changes to be committed
+    index = 1
+    for line in git.status_to_commit():
+        if index == 2:
+            print(line + BC_GREEN)
+        else:
+            print(line)
+        index += 1
+    print(BC_END)
 
     # print changed files
 
     # print new files
+    index = len(get_dir()) + 1
     if new_files:
         print((
             "Untracked files:\n"
