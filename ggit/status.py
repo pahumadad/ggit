@@ -1,5 +1,7 @@
+import sys
 from ggit.core.common import get_dir
 from ggit.core.common import get_files
+from ggit.core.common import get_rel_path
 from ggit.core.common import BC_END
 from ggit.core.common import BC_GREEN
 from ggit.core.common import BC_RED
@@ -15,7 +17,7 @@ def status():
 
     new_files = []
     changed_files = []
-    files_no_enc = get_files(FILE_TYPE_NO_ENC)
+    files_no_enc = get_files(file_type=FILE_TYPE_NO_ENC)
     for f in files_no_enc:
         if not gpg.exist_enc(f):
             new_files.append(f)
@@ -24,34 +26,35 @@ def status():
 
     # print git status header
     for line in git.status_header():
-        print(line)
-    print()
+        sys.stdout.write(line + "\n")
+    sys.stdout.write("\n")
 
     # print git status changes to be committed
     index = 1
-    for line in git.status_to_commit():
+    resp = git.status_to_commit()
+    for line in resp:
         if index == 2:
-            print(line + BC_GREEN)
+            sys.stdout.write(line + BC_GREEN + "\n")
         else:
-            print(line)
+            sys.stdout.write(line + "\n")
         index += 1
-    print(BC_END)
+    if resp:
+        sys.stdout.write(BC_END + "\n")
 
     # print changed files
 
     # print new files
-    index = len(get_dir()) + 1
     if new_files:
-        print((
+        sys.stdout.write((
             "Untracked files:\n"
             "  (use 'git add <file>...' to include in what will be committed)"
-            f"{BC_RED}"
+            f"{BC_RED}\n"
         ))
         for f in new_files:
-            print(f"\t{f[index:]}")
-        print((
+            sys.stdout.write(f"\t{get_rel_path(f)}\n")
+        sys.stdout.write((
             "\n"
             f"{BC_END}"
             "no changes added to commit "
-            "(use 'git add' and/or 'git commit -a')"
+            "(use 'git add' and/or 'git commit -a')\n"
         ))
