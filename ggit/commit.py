@@ -16,15 +16,16 @@ def commit(paths, message, all):
         sys.exit(f"fatal: paths '{paths[0]} ...' with -a does not make sense")
 
     # encrypt modified files
+    git = Git()
     gpg = GPG()
     files = []
-    if not paths and not all:
+    if not paths and not all and not git.status_to_commit():
         return status()
     elif not message:
         sys.exit("ggit commit: error: the following arguments are required: -m/--message")  # noqa
     elif all:
-        files = get_files(file_type=FILE_TYPE_NO_ENC)
-        for f in files:
+        files_list = get_files(file_type=FILE_TYPE_NO_ENC)
+        for f in files_list:
             if not gpg.exist_enc(f):
                 continue
             if not get_diff(f):
@@ -59,5 +60,4 @@ def commit(paths, message, all):
     if all:
         args.extend(["--all"])
 
-    git = Git()
     git.commit(args)
