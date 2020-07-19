@@ -25,6 +25,15 @@ def get_diff(file_2):
     if not os.path.isfile(file_1):
         return None
 
+    # compare the last modified date:
+    # if the encrypted file is newer than the no encrypted
+    # it's assumed that there are no changes in the no encrypted one
+    date_1 = os.path.getmtime(file_1)
+    date_2 = os.path.getmtime(file_2)
+    if date_1 >= date_2:
+        return None
+
+    # decrypt the encrypted file to get the diff
     file_1 = gpg.decrypt(file_1, tmp=True)
 
     # open files
