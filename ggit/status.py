@@ -64,12 +64,7 @@ def status():
         ))
         for f in new_files:
             sys.stdout.write(f"\t{get_rel_path(f)}\n")
-        sys.stdout.write((
-            "\n"
-            f"{BC_END}"
-            "no changes added to commit "
-            "(use 'ggit add' and/or 'ggit commit -a')\n"
-        ))
+        sys.stdout.write(BC_END + "\n")
 
     # footer
     if not changed_files and not new_files and not resp:
