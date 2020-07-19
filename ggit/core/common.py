@@ -1,11 +1,14 @@
 import os
 import sys
+from difflib import unified_diff
 
 from ggit.core.gpg import GPG
 
-BC_RED = "\033[91m"
-BC_GREEN = "\033[92m"
+BC_BOLD = "\033[1m"
+BC_CYAN = "\033[96m"
 BC_END = "\033[0m"
+BC_GREEN = "\033[92m"
+BC_RED = "\033[91m"
 BLACKLIST = (
     ".git",
     ".gitignore",
@@ -14,6 +17,29 @@ BLACKLIST = (
 FILE_TYPE_ALL = "all"
 FILE_TYPE_ENC = "encrypted"
 FILE_TYPE_NO_ENC = "no_encrypted"
+
+
+def get_diff(file_2):
+    gpg = GPG()
+    file_1 = gpg.get_enc_file(file_2)
+    if not os.path.isfile(file_1):
+        return None
+
+    file_1 = gpg.decrypt(file_1, tmp=True)
+
+    # open files
+    text_1 = open(file_1).readlines()
+    text_2 = open(file_2).readlines()
+
+    # compare
+    resp = []
+    file = get_rel_path(file_2)
+    for line in unified_diff(text_1, text_2, fromfile=file, tofile=file):
+        resp.append(line)
+
+    # delete temp file
+    os.remove(file_1)
+    return resp
 
 
 def get_dir():
@@ -62,3 +88,8 @@ def get_files(folder=None, file_type=FILE_TYPE_ALL, new=False):
             files_list.append(path)
 
     return files_list
+
+
+def get_rel_path(file):
+    root = get_dir()
+    return file[len(root) + 1:]
