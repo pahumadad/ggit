@@ -21,7 +21,7 @@ def diff(paths):
                 f = get_file(p)
                 if not f:
                     continue
-                files.append(get_file(p))
+                files.append(f)
             elif os.path.isdir(p):
                 files.extend(
                     get_files(p, file_type=FILE_TYPE_NO_ENC)
