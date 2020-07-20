@@ -59,7 +59,7 @@ def status():
     if new_files:
         sys.stdout.write((
             "Untracked files:\n"
-            "  (use 'git add <file>...' to include in what will be committed)"
+            "  (use 'ggit add <file>...' to include in what will be committed)"
             f"{BC_RED}\n"
         ))
         for f in new_files:
